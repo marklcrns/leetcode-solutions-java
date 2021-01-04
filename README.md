@@ -1,4 +1,4 @@
-# leetcode-solutions
+# leetcode-solutions-java
 
 Compilation of my LeetCode solutions written in Java powered by:
 
