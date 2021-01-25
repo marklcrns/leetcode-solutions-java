@@ -27,22 +27,22 @@ class Solution {
 			// Example 1
 			//
 			// nums1: [1, 3]
-			//				 ↑ midX
+			//         ↑ midX
 			// nums2: [2]
-			//				 ↑ midY
+			//         ↑ midY
 			//
 			// Combined sorted: [1, 2, 3]
-			//							midX ↑  ↑ midY
+			//              midX ↑  ↑ midY
 			//
 			// Example 2
 			//
 			// nums1: [1, 2]
-			//			   ↑ midX
+			//         ↑ midX
 			// nums2: [3, 4]
-			//		     ↑ midY
+			//         ↑ midY
 			//
 			// Combined sorted: [1, 2, 3, 4, 5]
-			//					    midx ↑		 ↑ midY
+			//              midx ↑     ↑ midY
 			//
 
 			// System.out.println("lo: " + lo + ",\t\t\thi: " + hi);
