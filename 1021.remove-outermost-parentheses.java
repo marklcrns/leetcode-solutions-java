@@ -98,17 +98,11 @@ class Solution {
 			// stacked openings, then it pops off from the stack whenever it finds
 			// closing.
 			if (c == '(') {
+				if (open != 0) sb.append(c);
 				open++;
-				if (open == 1)
-					continue;
 			} else if (c == ')') {
 				open--;
-			}
-
-			// If open > 0, Meaning theres, an open outer parenthesis:
-			// Append into buf
-			if (open > 0) {
-				sb.append(c);
+				if (open != 0) sb.append(c);
 			}
 		}
 
