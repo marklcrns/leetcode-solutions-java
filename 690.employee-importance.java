@@ -56,47 +56,78 @@ public List<Integer> subordinates;
 };
 */
 
+
+// Given information:
+//		List if Employee class unique id, importance, List of subordinates' id
+//		Max Employee 2000
+//		At least 1 employee has direct leader and more than 1 subordinates
+//		Return all importance value of current employee and the subordinates
+//
+// Recursion?
+// Needs to have the indexes correlated to the employee id
+// Convert List into HashMap
+// Nested loops?
+// Needs to have a way of skipping employees already been searched
+
+
+// // RECURSION - Depth-First Search
+// // Convert List into HashMap with id as the key
+// // Store total importance value
+// // Get root employee
+// 	// if root employee has no subordinates
+// 		// return importance value
+// 	// else, loop over subordinates and recurse down
+// class Solution {
+// 	public Map<Integer, Employee> roster;
+//
+// 	public int getImportance(List<Employee> employees, int id) {
+//
+// 		if (employees == null) return 0;
+// 		roster = new HashMap<Integer, Employee>();
+//
+// 		for (Employee e : employees) {
+// 			roster.put(e.id, e);
+// 		}
+//
+// 		return calculateImportance(id);
+// 	}
+//
+// 	public int calculateImportance(int id) {
+// 		Employee lead =  roster.get(id);
+// 		int totalImp = lead.importance;
+//
+// 		if (lead.subordinates.isEmpty()) {
+// 			return totalImp;
+// 		} else {
+// 			for (int subId : lead.subordinates) {
+// 				totalImp += calculateImportance(subId);
+// 			}
+// 		}
+//
+// 		return totalImp;
+// 	}
+// }
+
+// NESTED LOOPS
 class Solution {
-	public Map<Integer, Employee> roster;
-
+	HashMap<Integer, Employee> roster;
 	public int getImportance(List<Employee> employees, int id) {
-		// Given information:
-		//		List if Employee class unique id, importance, List of subordinates' id
-		//		Max Employee 2000
-		//		At least 1 employee has direct leader and more than 1 subordinates
-		//		Return all importance value of current employee and the subordinates
-		//
-		// Recursion?
-			// Need to have the indexes correlated to the employee id
-			// Convert List into HashMap
-		// Nested loops?
-
-		// RECURSION - Depth-First Search
-		// Convert List into HashMap with id as the key
-		// Store total importance value
-		// Get root employee
-			// if root employee has no subordinates
-				// return importance value
-			// else, loop over subordinates and recurse down
-
-		this.roster = new HashMap<Integer, Employee>();
+		if (employees == null) return 0;
+		roster = new HashMap<>();
 
 		for (Employee e : employees) {
-			this.roster.put(e.id, e);
+			roster.put(e.id, e);
 		}
 
-		return calculateImportance(id);
-	}
+		int totalImp = 0;
+		Queue<Employee> q = new LinkedList<>();
+		q.add(roster.get(id));
 
-	public int calculateImportance(int id) {
-		Employee lead =  this.roster.get(id);
-		int totalImp = lead.importance;
-
-		if (lead.subordinates.isEmpty()) {
-			return totalImp;
-		} else {
-			for (int subId : lead.subordinates) {
-				totalImp += calculateImportance(subId);
+		while (!q.isEmpty()) {
+			Employee curr = q.poll();
+			totalImp += curr.importance;
+			for (int subID : curr.subordinates) {
+				q.add(roster.get(subID));
 			}
 		}
 
