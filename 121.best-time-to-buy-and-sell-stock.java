@@ -77,7 +77,12 @@ class Solution {
 		//               ^
 
 		int profit = 0;
-		int buy = Integer.MAX_VALUE;
+
+		if (prices.length == 0) {
+			return profit;
+		}
+
+		int buy = 10000;
 
 		for (int i = 0; i < prices.length; i++) {
 			int curr = prices[i];
