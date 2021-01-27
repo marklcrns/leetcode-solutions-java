@@ -82,7 +82,7 @@ class Solution {
 			return profit;
 		}
 
-		int buy = 10000;
+		int buy = 10000; // Max price constraint = 10^4
 
 		for (int i = 0; i < prices.length; i++) {
 			int curr = prices[i];
