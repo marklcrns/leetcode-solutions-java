@@ -57,7 +57,7 @@ public List<Integer> subordinates;
 */
 
 class Solution {
-	public HashMap<Integer, Employee> roster = new HashMap<Integer, Employee>();
+	public Map<Integer, Employee> roster;
 
 	public int getImportance(List<Employee> employees, int id) {
 		// Given information:
@@ -71,12 +71,15 @@ class Solution {
 			// Convert List into HashMap
 		// Nested loops?
 
+		// RECURSION - Depth-First Search
 		// Convert List into HashMap with id as the key
 		// Store total importance value
 		// Get root employee
 			// if root employee has no subordinates
 				// return importance value
 			// else, loop over subordinates and recurse down
+
+		this.roster = new HashMap<Integer, Employee>();
 
 		for (Employee e : employees) {
 			this.roster.put(e.id, e);
@@ -89,7 +92,7 @@ class Solution {
 		Employee lead =  this.roster.get(id);
 		int totalImp = lead.importance;
 
-		if (lead.subordinates.size() == 0) {
+		if (lead.subordinates.isEmpty()) {
 			return totalImp;
 		} else {
 			for (int subId : lead.subordinates) {
