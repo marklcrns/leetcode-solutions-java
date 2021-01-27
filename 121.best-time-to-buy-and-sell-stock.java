@@ -77,18 +77,15 @@ class Solution {
 		//               ^
 
 		int profit = 0;
-		int buyIdx = 0;
+		int buy = Integer.MAX_VALUE;
 
 		for (int i = 0; i < prices.length; i++) {
 			int curr = prices[i];
-			int buy = prices[buyIdx];
-			// Look for a higher price point for selling
-			if (curr > buy && curr - buy > profit) {
-				profit = curr - buy;
-			}
 			// Look for a lower price point for buying
 			if (curr < buy) {
-				buyIdx = i;
+				buy = curr;
+			} else {
+				profit = Math.max(profit, curr - buy);
 			}
 		}
 
