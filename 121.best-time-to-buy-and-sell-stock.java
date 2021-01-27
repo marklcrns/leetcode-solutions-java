@@ -84,8 +84,8 @@ class Solution {
 			// Look for a lower price point for buying
 			if (curr < buy) {
 				buy = curr;
-			} else {
-				profit = Math.max(profit, curr - buy);
+			} else if (curr - buy > profit) {
+				profit = curr - buy;
 			}
 		}
 
