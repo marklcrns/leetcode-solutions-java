@@ -70,67 +70,67 @@ public List<Integer> subordinates;
 // Needs to have a way of skipping employees already been searched
 
 
-// // RECURSION - Depth-First Search
-// // Convert List into HashMap with id as the key
-// // Store total importance value
-// // Get root employee
-// 	// if root employee has no subordinates
-// 		// return importance value
-// 	// else, loop over subordinates and recurse down
-// class Solution {
-// 	public Map<Integer, Employee> roster;
-//
-// 	public int getImportance(List<Employee> employees, int id) {
-//
-// 		if (employees == null) return 0;
-// 		roster = new HashMap<Integer, Employee>();
-//
-// 		for (Employee e : employees) {
-// 			roster.put(e.id, e);
-// 		}
-//
-// 		return calculateImportance(id);
-// 	}
-//
-// 	public int calculateImportance(int id) {
-// 		Employee lead =  roster.get(id);
-// 		int totalImp = lead.importance;
-//
-// 		if (lead.subordinates.isEmpty()) {
-// 			return totalImp;
-// 		} else {
-// 			for (int subId : lead.subordinates) {
-// 				totalImp += calculateImportance(subId);
-// 			}
-// 		}
-//
-// 		return totalImp;
-// 	}
-// }
-
-// NESTED LOOPS
+// RECURSION - Depth-First Search
+// Convert List into HashMap with id as the key
+// Store total importance value
+// Get root employee
+	// if root employee has no subordinates
+		// return importance value
+	// else, loop over subordinates and recurse down
 class Solution {
-	HashMap<Integer, Employee> roster;
+	public Map<Integer, Employee> roster;
+
 	public int getImportance(List<Employee> employees, int id) {
+
 		if (employees == null) return 0;
-		roster = new HashMap<>();
+		roster = new HashMap<Integer, Employee>();
 
 		for (Employee e : employees) {
 			roster.put(e.id, e);
 		}
 
-		int totalImp = 0;
-		Queue<Employee> q = new LinkedList<>();
-		q.add(roster.get(id));
+		return calculateImportance(id);
+	}
 
-		while (!q.isEmpty()) {
-			Employee curr = q.poll();
-			totalImp += curr.importance;
-			for (int subID : curr.subordinates) {
-				q.add(roster.get(subID));
+	public int calculateImportance(int id) {
+		Employee lead =  roster.get(id);
+		int totalImp = lead.importance;
+
+		if (lead.subordinates.isEmpty()) {
+			return totalImp;
+		} else {
+			for (int subId : lead.subordinates) {
+				totalImp += calculateImportance(subId);
 			}
 		}
 
 		return totalImp;
 	}
 }
+
+// // NESTED LOOPS
+// class Solution {
+// 	HashMap<Integer, Employee> roster;
+// 	public int getImportance(List<Employee> employees, int id) {
+// 		if (employees == null) return 0;
+// 		roster = new HashMap<>();
+//
+// 		for (Employee e : employees) {
+// 			roster.put(e.id, e);
+// 		}
+//
+// 		int totalImp = 0;
+// 		Queue<Employee> q = new LinkedList<>();
+// 		q.add(roster.get(id));
+//
+// 		while (!q.isEmpty()) {
+// 			Employee curr = q.poll();
+// 			totalImp += curr.importance;
+// 			for (int subID : curr.subordinates) {
+// 				q.add(roster.get(subID));
+// 			}
+// 		}
+//
+// 		return totalImp;
+// 	}
+// }
