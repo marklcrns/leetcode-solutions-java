@@ -67,6 +67,8 @@ class Solution {
 		//		Return all importance value of current employee and the subordinates
 		//
 		// Recursion?
+			// Need to have the indexes correlated to the employee id
+			// Convert List into HashMap
 		// Nested loops?
 
 		// Convert List into HashMap with id as the key
