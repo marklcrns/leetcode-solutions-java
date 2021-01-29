@@ -49,51 +49,39 @@
  *
  */
 
+// BETTER DYNAMIC PROGRAMMING
+// TIME: O(mn)
+// SPACE: O(n)
+// --------------------------
 class Solution {
 	public int maximalSquare(char[][] matrix) {
-		int maxRow = matrix.length, maxCol = maxRow > 0 ? matrix[0].length : 0;
-		int maxSqrLen = 0;
-		for (int row = 0; row < maxRow; row++) {
-			for (int col = 0; col < maxCol; col++) {
+		int maxRow = matrix.length;
+		int maxCol = maxRow > 0 ? matrix[0].length : 0;
 
-				// Check for the maximum square size relative to current element
-				// 1 - > ?
-				// |
-				// v
-				// ?
-				// Searching from left to right and top to bottom
-				if (matrix[row][col] == '1') {
-					int sqrLen = 1;
-					boolean isExpandSquare = true;
+		// Instead of alternate matrix, we use an array instead since we only need
+		// to know the top left element from the current (which is the top row) per
+		// row iteration
+		int[] dp = new int[maxCol + 1];
+		int maxSqrLen = 0, prev = 0;
 
-					// If square is expandable or not at the lower edge and/or right edge
-					// of the matrix
-					while (sqrLen + row < maxRow && sqrLen + col < maxCol && isExpandSquare) {
+		// Start loop from the top left of the matrix
+		for (int row = 1; row <= maxRow; row++) {
+			for (int col = 1; col <= maxCol; col++) {
+				int next = dp[col];
+				//  pre
+				//   v
+				//   S [ 0 , 0 , 0 , 0 , 0 ]
+				//	     ^   ^
+				//      c-1 nxt
+				//
+				if (matrix[row - 1][col - 1] == '1') {
+					dp[col] = Math.min(Math.min(dp[col - 1], prev), next) + 1;
 
-						// Look for zero horizontally for expansion
-						for (int i = col; i <= sqrLen + col; i++) {
-							if (matrix[row + sqrLen][i] == '0') {
-								isExpandSquare = false;
-								break;
-							}
-						}
-
-						// Look for zero vertically for expansion
-						for (int i = row; i <= sqrLen + row; i++) {
-							if (matrix[i][col + sqrLen] == '0') {
-								isExpandSquare = false;
-								break;
-							}
-						}
-
-						if (isExpandSquare)
-							sqrLen++;
-					}
-
-					if (maxSqrLen < sqrLen) {
-						maxSqrLen = sqrLen;
-					}
+					maxSqrLen = Math.max(maxSqrLen, dp[col]);
+				} else {
+					dp[col] = 0;
 				}
+				prev = next;
 			}
 		}
 		return maxSqrLen * maxSqrLen;
@@ -102,71 +90,94 @@ class Solution {
 
 
 
+// DYNAMIC PROGRAMMING
+// TIME: O(mn)
+// SPACE: O(mn)
+// -------------------
 // class Solution {
 // 	public int maximalSquare(char[][] matrix) {
-// 		// Check if matrix is empty
-// 		if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
-// 		// Notes:
-// 			// 1's ands 0's are in Char format?
-//
-// 		// [["1","0","1","0","0"]
-// 		//  ["1","0","1","1","1"]
-// 		//  ["1","1","1","1","1"]
-// 		//  ["1","0","0","1","0"]]
-// 		//
-// 		// [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
-//
-// 		// Approach:
-// 		// BRUTE FORCE:
-// 			// Loop over matrix m x n
-// 				// Check bottom row and right column for 1's
-// 					// Create a function for checking for surrounding 1's and 0's
-// 				// if (all 1's)
-// 					// updateArea;
-// 				// if (bottom row || right col nomore)
-// 					// break
-//
-// 		// Right and bottom search
-//
-// 		// First check if current index is 1, otherwise return 0
-// 		// Check if next nth binary is 1, if so, check the next nth, while recording
-// 		// how far it went so far. (this will be used how far to search mth wise or
-// 		// vertically)
-// 		// When it horizontal search reaches the closest zero break and go to the
-// 		// next mth and repeat certain times the furthest horizontal search reached
-//
-// 		// at the end, get the minimum value of the horizontal searches to get the
-// 		// biggest area of the matrix at the given start location
-//
-// 		int rowMax = matrix.length;
-// 		int colMax = matrix[0].length;
-// 		int maxSquareSide = 0;
-// 		for (int row = 0; row < rowMax - 1; row++) {		// Exclude last row and col
-// 			for (int col = 0; col < colMax - 1; col++) {
-//
-// 				// find furthest non 0 from the right
-// 				int furthestNonZeroSubCol = findFurthestNonZeroSubCol(matrix, row, col, colMax);
-// 				maxSquareSide = Math.max(maxSquareSide,
-// 						evaluateOneSquare(matrix, row, col, furthestNonZeroSubCol));
-//
+// 		int maxRow = matrix.length;
+// 		int maxCol = maxRow > 0 ? matrix[0].length : 0;
+// 		// dp = separate matrix for mapping dynamic programming values
+// 		// +1 row and col for padding
+// 		int[][] dp = new int[maxRow + 1][maxCol + 1];
+// 		int maxSqrLen = 0;
+// 		// Start loop from the top left of the matrix down to the bottom right
+// 		// Starting from the second row and col, hence the padding
+// 		for (int row = 1; row <= maxRow; row++) {
+// 			for (int col = 1; col <= maxCol; col++) {
+// 				// The the current element in matrix if 1
+// 				if (matrix[row - 1][col - 1] == '1'){
+// 					// dp values will eventually be filled up as the loop progresses, so
+// 					// initially, the top and/or left of current dp matrix point will be
+// 					// the default value of initialized int array, that is 0
+// 					int topLeft = dp[row - 1][col - 1];
+// 					int top = dp[row - 1][col];
+// 					int left = dp[row][col - 1];
+// 					dp[row][col] = Math.min(Math.min(left, top), topLeft) + 1;
+// 					maxSqrLen = Math.max(maxSqrLen, dp[row][col]);
+// 				}
 // 			}
 // 		}
-// 	}
-//
-// 	public int findFurthestNonZeroSubCol(char[][] matrix, int row, int col, int colMax) {
-// 		int furthestNonZeroSubCol = 0;
-// 			for (int i = col; i < colMax; i++) {
-// 				if (matrix[row][i] == '0') break;
-// 				else furthestNonZeroSubCol++;
-// 			}
-// 		return furthestNonZeroSubCol;
-// 	}
-//
-// 	public int evaluateOneSquare(char[][] matrix, int row, int col, int size) {
-// 		while (++row <= size) {
-// 			int furthestNonZeroSubCol = findFurthestNonZeroSubCol(matrix, row, col, size);
-// 			if (furthestNonZeroSubCol <= size)
-// 				continue;
-// 		}
+// 		return maxSqrLen * maxSqrLen;
 // 	}
 // }
+
+
+
+// BRUTE FORCE SOLUTION
+// TIME: O((mn)^2)
+// SPACE: O(1)
+// --------------------
+// class Solution {
+// 	public int maximalSquare(char[][] matrix) {
+// 		int maxRow = matrix.length, maxCol = maxRow > 0 ? matrix[0].length : 0;
+// 		int maxSqrLen = 0;
+// 		for (int row = 0; row < maxRow; row++) {
+// 			for (int col = 0; col < maxCol; col++) {
+//
+// 				// Check for the maximum square size relative to current element
+// 				// 1 - > ?
+// 				// |
+// 				// v
+// 				// ?
+// 				// Searching from left to right and top to bottom
+// 				if (matrix[row][col] == '1') {
+// 					int sqrLen = 1;
+// 					boolean isExpandSquare = true;
+//
+// 					// If square is expandable or not at the lower edge and/or right edge
+// 					// of the matrix
+// 					while (sqrLen + row < maxRow && sqrLen + col < maxCol && isExpandSquare) {
+//
+// 						// Look for zero horizontally for expansion
+// 						for (int i = col; i <= sqrLen + col; i++) {
+// 							if (matrix[row + sqrLen][i] == '0') {
+// 								isExpandSquare = false;
+// 								break;
+// 							}
+// 						}
+//
+// 						// Look for zero vertically for expansion
+// 						for (int i = row; i <= sqrLen + row; i++) {
+// 							if (matrix[i][col + sqrLen] == '0') {
+// 								isExpandSquare = false;
+// 								break;
+// 							}
+// 						}
+//
+// 						if (isExpandSquare)
+// 							sqrLen++;
+// 					}
+//
+// 					// Record sqrLen if bigger than current
+// 					if (maxSqrLen < sqrLen) {
+// 						maxSqrLen = sqrLen;
+// 					}
+// 				}
+// 			}
+// 		}
+// 		return maxSqrLen * maxSqrLen;
+// 	}
+// }
+
