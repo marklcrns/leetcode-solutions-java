@@ -160,7 +160,7 @@ class Solution {
 
 		// Initialize dp
 		for (int i = 0; i < n; i++) {
-			Arrays.fill(dp[i], 10001);
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
 			dp[i][i] = 0;
 		}
 
