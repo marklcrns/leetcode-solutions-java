@@ -148,39 +148,96 @@ import java.util.Arrays;
 // }
 
 /* Floyd Warshall */
+
+// class Solution {
+// 	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+// 		int[][] dp = new int[n][n];
+//
+// 		// Initialize dp
+// 		for (int i = 0; i < n; i++) {
+// 			Arrays.fill(dp[i], Integer.MAX_VALUE);
+// 			dp[i][i] = 0;
+// 		}
+//
+// 		for (int[] edge : edges) {
+// 			// Fill dp with from to edge grid; dp[from][to] = weight
+// 			dp[edge[0]][edge[1]] = edge[2];
+// 			dp[edge[1]][edge[0]] = edge[2];
+// 		}
+//
+// 		// Find all shortest path
+// 		for (int detour = 0; detour < n; detour++) {
+// 			for (int from = 0; from < n; from++) {
+// 				for (int to = 0; to < n; to++) {
+// 					// Update edge path if detour city is shorter than direct
+// 					if (dp[from][to] > dp[from][detour] + dp[detour][to])
+// 						dp[from][to] = dp[from][detour] + dp[detour][to];
+// 				}
+// 			}
+// 		}
+//
+// 		int maxVisits = n + 1;
+// 		int cityWithLesserNeighbors = -1;
+// 		for(int from = 0; from < n; from++) {
+// 			// Get all neighboring cities with less than distanceThreshold edge
+// 			int neighborCitiesWithinLimit = 0;
+// 			for(int to = 0; to < n; to++) {
+// 				if(dp[from][to] <= distanceThreshold)
+// 					neighborCitiesWithinLimit++;
+// 			}
+// 			if(neighborCitiesWithinLimit <= maxVisits){
+// 				cityWithLesserNeighbors = from;
+// 				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
+// 			}
+// 		}
+//
+// 		return cityWithLesserNeighbors;
+// 	}
+// }
+
+
 class Solution {
 	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
 		float[][] dp = new float[n][n];
-		for(int i = 0; i < n; i++){
-			Arrays.fill(dp[i],Integer.MAX_VALUE);
-			/* If int[][] Arrays.fill(dp[i],12345); */
+
+		// Initialize dp
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
 			dp[i][i] = 0;
 		}
-		for(int[] edge : edges){
+
+		for (int[] edge : edges) {
+			// Fill dp with from to edge grid; dp[from][to] = weight
 			dp[edge[0]][edge[1]] = edge[2];
 			dp[edge[1]][edge[0]] = edge[2];
 		}
 
-		for(int k = 0; k < n; k++){
-			for(int i = 0; i < n; i++) {
-				for(int j = 0; j < n; j++) {
-					dp[i][j] = Math.min(dp[i][j],dp[i][k] + dp[k][j]);
+		// Find all shortest path
+		for (int detour = 0; detour < n; detour++) {
+			for (int from = 0; from < n; from++) {
+				for (int to = 0; to < n; to++) {
+					// Update edge path if detour city is shorter than direct
+					if (dp[from][to] > dp[from][detour] + dp[detour][to])
+						dp[from][to] = dp[from][detour] + dp[detour][to];
 				}
 			}
 		}
-		int maxVisits = n+1;
-		int result = -1;
 
-		for(int i = 0; i < n; i++) {
-			int visit = 0;
-			for(int j = 0; j < n; j++) {
-				if(dp[i][j] <= distanceThreshold) visit++;
+		int maxVisits = n + 1;
+		int cityWithLesserNeighbors = -1;
+		for(int from = 0; from < n; from++) {
+			// Get all neighboring cities with less than distanceThreshold edge
+			int neighborCitiesWithinLimit = 0;
+			for(int to = 0; to < n; to++) {
+				if(dp[from][to] <= distanceThreshold)
+					neighborCitiesWithinLimit++;
 			}
-			if(visit <= maxVisits){
-				result = i;
-				maxVisits = Math.min(maxVisits,visit);
+			if(neighborCitiesWithinLimit <= maxVisits){
+				cityWithLesserNeighbors = from;
+				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
 			}
 		}
-		return result;
+
+		return cityWithLesserNeighbors;
 	}
 }
