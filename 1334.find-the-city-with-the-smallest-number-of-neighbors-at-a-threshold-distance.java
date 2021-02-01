@@ -114,21 +114,22 @@ class Solution {
 			graph[edge[1]].add(new Edge(edge[0], edge[2]));	// to
 		}
 
-		int maxNodes = n + 1;
-		int maxVertex = -1;
+		int maxNodeVisits = n + 1;
+		int cityWithLesserNeighbors = -1;
 		for(int i = 0; i < n; i++){
+			// Visit all cities within distanceThreshold
 			int visits = bfs(graph, i, distanceThreshold);
-			if(visits <= maxNodes){
-				maxVertex = i;
-				maxNodes = Math.min(maxNodes, visits);
+			if(visits <= maxNodeVisits){
+				cityWithLesserNeighbors = i;
+				maxNodeVisits = Math.min(maxNodeVisits, visits);
 			}
 		}
 
-		return maxVertex;
+		return cityWithLesserNeighbors;
 	}
 
 	// Breadth-first Search (BFS)
-	// Returns the number of visited nodes
+	// Returns the number of visited nodes within the given distance threshold
 	public int bfs(LinkedList<Edge>[] graph, int vertex, int thresh){
 		// Storage for the explored vertices
 		Map<Integer,Integer> map = new HashMap<>();
@@ -199,8 +200,7 @@ class Solution {
 // 			for (int from = 0; from < n; from++) {
 // 				for (int to = 0; to < n; to++) {
 // 					// Update edge path if detour city is shorter than direct
-// 					if (dp[from][to] > dp[from][detour] + dp[detour][to])
-// 						dp[from][to] = dp[from][detour] + dp[detour][to];
+// 					dp[from][to] = Math.min(dp[from][to], dp[from][detour] + dp[detour][to]);
 // 				}
 // 			}
 // 		}
