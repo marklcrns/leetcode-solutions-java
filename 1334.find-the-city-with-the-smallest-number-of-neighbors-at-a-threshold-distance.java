@@ -87,139 +87,139 @@ import java.util.PriorityQueue;
 // * Votes:   6
 
 
-/* Dikstra Algorithm */
-class Edge {
-	int to;
-	int weight;
-
-	public Edge(int to, int weight){
-		this.to = to;
-		this.weight = weight;
-	}
-}
-
-/* Dijkstra Algorithm */
-class Solution {
-	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
-		// Create Linked list of edges as the vertex
-		LinkedList<Edge>[] graph = new LinkedList[n];
-
-		for(int i = 0; i < graph.length; i++){
-			graph[i] = new LinkedList<>();
-		}
-
-		// Fill the matrix graph with bidirectional direct Edges
-		for(int[] edge : edges){
-			graph[edge[0]].add(new Edge(edge[1], edge[2]));	// from
-			graph[edge[1]].add(new Edge(edge[0], edge[2]));	// to
-		}
-
-		int maxNodeVisits = n + 1;
-		int cityWithLesserNeighbors = -1;
-		for(int i = 0; i < n; i++){
-			// Visit all cities within distanceThreshold
-			int visits = bfs(graph, i, distanceThreshold);
-			if(visits <= maxNodeVisits){
-				cityWithLesserNeighbors = i;
-				maxNodeVisits = Math.min(maxNodeVisits, visits);
-			}
-		}
-
-		return cityWithLesserNeighbors;
-	}
-
-	// Breadth-first Search (BFS)
-	// Returns the number of visited nodes within the given distance threshold
-	public int bfs(LinkedList<Edge>[] graph, int vertex, int thresh){
-		// Storage for the explored vertices
-		Map<Integer,Integer> map = new HashMap<>();
-
-		// (Edge a, Edge b) -> (a.weight - b.weight) is a comparator lambda for
-		// sorting the smallest value (a.weight - b.weight) first. Therefore, this
-		// PQ prioritizes smaller numbers first (ascending).
-		PriorityQueue<Edge> pq = new PriorityQueue<>((Edge a, Edge b) -> (a.weight - b.weight));
-		// Initialize with new Edge with 0 weight
-		pq.offer(new Edge(vertex, 0));
-
-		while(!pq.isEmpty()){
-			Edge edge = pq.remove();
-
-			// Skip if edge already in the map and weight is greater
-			if(map.containsKey(edge.to) && edge.weight > map.get(edge.to))
-				continue;
-
-			// Add or update edge to map
-			map.put(edge.to, edge.weight);
-
-			// Traverse next edge
-			for(Edge e : graph[edge.to]) {
-				int dist = e.weight + edge.weight;
-
-				if(dist > thresh)
-					continue;
-
-				// Skip if edge already in the map and distance is greater
-				if(map.containsKey(e.to) && dist > map.get(e.to))
-					continue;
-
-				// Add or update edge to map
-				map.put(e.to, dist);
-				pq.offer(new Edge(e.to,dist));
-			}
-		}
-
-		return map.size() - 1;
-	}
-}
-
-// /* Floyd Warshall */
+// /* Dikstra Algorithm */
+// class Edge {
+// 	int to;
+// 	int weight;
+//
+// 	public Edge(int to, int weight){
+// 		this.to = to;
+// 		this.weight = weight;
+// 	}
+// }
+//
+// /* Dijkstra Algorithm */
 // class Solution {
 // 	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
-// 		// This needs to be a float because it needs to store the Integer.MAX_VALUE.
-// 		// Else if this is int, adding a positive number to the max value an integer
-// 		// can handle, the bits will overflow and becomes a negative number.
-// 		// Alternatively, instead of the MAX_VALUE as a placeholder, since the
-// 		// constraint for distanceThreshold <= 10^4, we can initialize it with
-// 		// anything greater than the threshold value (i.e., 10001).
-// 		float[][] dp = new float[n][n];
+// 		// Create Linked list of edges as the vertex
+// 		LinkedList<Edge>[] graph = new LinkedList[n];
 //
-// 		// Initialize dp
-// 		for (int i = 0; i < n; i++) {
-// 			Arrays.fill(dp[i], Integer.MAX_VALUE);
-// 			dp[i][i] = 0;
+// 		for(int i = 0; i < graph.length; i++){
+// 			graph[i] = new LinkedList<>();
 // 		}
 //
-// 		for (int[] edge : edges) {
-// 			// Fill dp with from to edge grid; dp[from][to] = weight
-// 			dp[edge[0]][edge[1]] = edge[2];
-// 			dp[edge[1]][edge[0]] = edge[2];
+// 		// Fill the matrix graph with bidirectional direct Edges
+// 		for(int[] edge : edges){
+// 			graph[edge[0]].add(new Edge(edge[1], edge[2]));	// from
+// 			graph[edge[1]].add(new Edge(edge[0], edge[2]));	// to
 // 		}
 //
-// 		// Find all shortest path
-// 		for (int detour = 0; detour < n; detour++) {
-// 			for (int from = 0; from < n; from++) {
-// 				for (int to = 0; to < n; to++) {
-// 					// Update edge path if detour city is shorter than direct
-// 					dp[from][to] = Math.min(dp[from][to], dp[from][detour] + dp[detour][to]);
-// 				}
-// 			}
-// 		}
-//
-// 		int maxVisits = n + 1;
+// 		int maxNodeVisits = n + 1;
 // 		int cityWithLesserNeighbors = -1;
-// 		for(int from = 0; from < n; from++) {
-// 			// Get all neighboring cities with less than distanceThreshold edge
-// 			int neighborCitiesWithinLimit = 0;
-// 			for(int to = 0; to < n; to++) {
-// 				if(dp[from][to] <= distanceThreshold)
-// 					neighborCitiesWithinLimit++;
-// 			}
-// 			if(neighborCitiesWithinLimit <= maxVisits){
-// 				cityWithLesserNeighbors = from;
-// 				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
+// 		for(int i = 0; i < n; i++){
+// 			// Visit all cities within distanceThreshold
+// 			int visits = bfs(graph, i, distanceThreshold);
+// 			if(visits <= maxNodeVisits){
+// 				cityWithLesserNeighbors = i;
+// 				maxNodeVisits = Math.min(maxNodeVisits, visits);
 // 			}
 // 		}
 //
 // 		return cityWithLesserNeighbors;
 // 	}
+//
+// 	// Breadth-first Search (BFS)
+// 	// Returns the number of visited nodes within the given distance threshold
+// 	public int bfs(LinkedList<Edge>[] graph, int vertex, int thresh){
+// 		// Storage for the explored vertices
+// 		Map<Integer,Integer> map = new HashMap<>();
+//
+// 		// (Edge a, Edge b) -> (a.weight - b.weight) is a comparator lambda for
+// 		// sorting the smallest value (a.weight - b.weight) first. Therefore, this
+// 		// PQ prioritizes smaller numbers first (ascending).
+// 		PriorityQueue<Edge> pq = new PriorityQueue<>((Edge a, Edge b) -> (a.weight - b.weight));
+// 		// Initialize with new Edge with 0 weight
+// 		pq.offer(new Edge(vertex, 0));
+//
+// 		while(!pq.isEmpty()){
+// 			Edge edge = pq.remove();
+//
+// 			// Skip if edge already in the map and weight is greater
+// 			if(map.containsKey(edge.to) && edge.weight > map.get(edge.to))
+// 				continue;
+//
+// 			// Add or update edge to map
+// 			map.put(edge.to, edge.weight);
+//
+// 			// Traverse next edge
+// 			for(Edge e : graph[edge.to]) {
+// 				int dist = e.weight + edge.weight;
+//
+// 				if(dist > thresh)
+// 					continue;
+//
+// 				// Skip if edge already in the map and distance is greater
+// 				if(map.containsKey(e.to) && dist > map.get(e.to))
+// 					continue;
+//
+// 				// Add or update edge to map
+// 				map.put(e.to, dist);
+// 				pq.offer(new Edge(e.to,dist));
+// 			}
+// 		}
+//
+// 		return map.size() - 1;
+// 	}
 // }
+
+/* Floyd Warshall */
+class Solution {
+	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+		// This needs to be a float because it needs to store the Integer.MAX_VALUE.
+		// Else if this is int, adding a positive number to the max value an integer
+		// can handle, the bits will overflow and becomes a negative number.
+		// Alternatively, instead of the MAX_VALUE as a placeholder, since the
+		// constraint for distanceThreshold <= 10^4, we can initialize it with
+		// anything greater than the threshold value (i.e., 10001).
+		float[][] dp = new float[n][n];
+
+		// Initialize dp
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
+			dp[i][i] = 0;
+		}
+
+		for (int[] edge : edges) {
+			// Fill dp with from to edge grid; dp[from][to] = weight
+			dp[edge[0]][edge[1]] = edge[2];
+			dp[edge[1]][edge[0]] = edge[2];
+		}
+
+		// Find all shortest path
+		for (int detour = 0; detour < n; detour++) {
+			for (int from = 0; from < n; from++) {
+				for (int to = 0; to < n; to++) {
+					// Update edge path if detour city is shorter than direct
+					dp[from][to] = Math.min(dp[from][to], dp[from][detour] + dp[detour][to]);
+				}
+			}
+		}
+
+		int maxVisits = n + 1;
+		int cityWithLesserNeighbors = -1;
+		for(int from = 0; from < n; from++) {
+			// Get all neighboring cities with less than distanceThreshold edge
+			int neighborCitiesWithinLimit = 0;
+			for(int to = 0; to < n; to++) {
+				if(dp[from][to] <= distanceThreshold)
+					neighborCitiesWithinLimit++;
+			}
+			if(neighborCitiesWithinLimit <= maxVisits){
+				cityWithLesserNeighbors = from;
+				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
+			}
+		}
+
+		return cityWithLesserNeighbors;
+	}
+}
