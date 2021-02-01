@@ -87,6 +87,59 @@ import java.util.PriorityQueue;
 // * Votes:   6
 
 
+/* Floyd Warshall */
+class Solution {
+	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+		// This needs to be a float because it needs to store the Integer.MAX_VALUE.
+		// Else if this is int, adding a positive number to the max value an integer
+		// can handle, the bits will overflow and becomes a negative number.
+		// Alternatively, instead of the MAX_VALUE as a placeholder, since the
+		// constraint for distanceThreshold <= 10^4, we can initialize it with
+		// anything greater than the threshold value (i.e., 10001).
+		float[][] dp = new float[n][n];
+
+		// Initialize dp
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
+			dp[i][i] = 0;
+		}
+
+		for (int[] edge : edges) {
+			// Fill dp with from to edge grid; dp[from][to] = weight
+			dp[edge[0]][edge[1]] = edge[2];
+			dp[edge[1]][edge[0]] = edge[2];
+		}
+
+		// Find all shortest path
+		for (int detour = 0; detour < n; detour++) {
+			for (int from = 0; from < n; from++) {
+				for (int to = 0; to < n; to++) {
+					// Update edge path if detour city is shorter than direct
+					dp[from][to] = Math.min(dp[from][to], dp[from][detour] + dp[detour][to]);
+				}
+			}
+		}
+
+		int maxVisits = n + 1;
+		int cityWithLesserNeighbors = -1;
+		for(int from = 0; from < n; from++) {
+			// Get all neighboring cities with less than distanceThreshold edge
+			int neighborCitiesWithinLimit = 0;
+			for(int to = 0; to < n; to++) {
+				if(dp[from][to] <= distanceThreshold)
+					neighborCitiesWithinLimit++;
+			}
+			if(neighborCitiesWithinLimit <= maxVisits){
+				cityWithLesserNeighbors = from;
+				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
+			}
+		}
+
+		return cityWithLesserNeighbors;
+	}
+}
+
+
 // /* Dikstra Algorithm */
 // class Edge {
 // 	int to;
@@ -98,7 +151,6 @@ import java.util.PriorityQueue;
 // 	}
 // }
 //
-// /* Dijkstra Algorithm */
 // class Solution {
 // 	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
 // 		// Create Linked list of edges as the vertex
@@ -172,54 +224,3 @@ import java.util.PriorityQueue;
 // 	}
 // }
 
-/* Floyd Warshall */
-class Solution {
-	public int findTheCity(int n, int[][] edges, int distanceThreshold) {
-		// This needs to be a float because it needs to store the Integer.MAX_VALUE.
-		// Else if this is int, adding a positive number to the max value an integer
-		// can handle, the bits will overflow and becomes a negative number.
-		// Alternatively, instead of the MAX_VALUE as a placeholder, since the
-		// constraint for distanceThreshold <= 10^4, we can initialize it with
-		// anything greater than the threshold value (i.e., 10001).
-		float[][] dp = new float[n][n];
-
-		// Initialize dp
-		for (int i = 0; i < n; i++) {
-			Arrays.fill(dp[i], Integer.MAX_VALUE);
-			dp[i][i] = 0;
-		}
-
-		for (int[] edge : edges) {
-			// Fill dp with from to edge grid; dp[from][to] = weight
-			dp[edge[0]][edge[1]] = edge[2];
-			dp[edge[1]][edge[0]] = edge[2];
-		}
-
-		// Find all shortest path
-		for (int detour = 0; detour < n; detour++) {
-			for (int from = 0; from < n; from++) {
-				for (int to = 0; to < n; to++) {
-					// Update edge path if detour city is shorter than direct
-					dp[from][to] = Math.min(dp[from][to], dp[from][detour] + dp[detour][to]);
-				}
-			}
-		}
-
-		int maxVisits = n + 1;
-		int cityWithLesserNeighbors = -1;
-		for(int from = 0; from < n; from++) {
-			// Get all neighboring cities with less than distanceThreshold edge
-			int neighborCitiesWithinLimit = 0;
-			for(int to = 0; to < n; to++) {
-				if(dp[from][to] <= distanceThreshold)
-					neighborCitiesWithinLimit++;
-			}
-			if(neighborCitiesWithinLimit <= maxVisits){
-				cityWithLesserNeighbors = from;
-				maxVisits = Math.min(maxVisits, neighborCitiesWithinLimit);
-			}
-		}
-
-		return cityWithLesserNeighbors;
-	}
-}
